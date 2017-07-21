@@ -3,8 +3,9 @@
   matching a specified query and outputting the list.
 */
 
-// Import the `hget` module.
+// Import required modules.
 const hgetMod = require('./hget');
+const cheerio = require('cheerio');
 
 // Identify its objects.
 const {chunks, hget, arg0IfValid} = hgetMod;
@@ -22,37 +23,38 @@ const requestParams = {
   HTML response of IMDB.
 */
 const getList = () => {
-  // Combine and JSON-parse the chunks and identify the resulting object.
-  const responseObject = JSON.parse(chunks.join(''));
-  // Initialize a report object.
-  const reportObject = {};
-  // Add the temperature to it in Kelvin, Celsius, and Fahrenheit scales.
-  reportObject['Kelvin'] = responseObject['main']['temp'];
-  const kelvinNum = Number.parseFloat(reportObject['Kelvin']);
-  reportObject['Celsius'] = (kelvinNum - 273.15).toFixed(2);
-  reportObject['Fahrenheit'] = (9 * kelvinNum / 5 - 459.67).toFixed(2);
-  // Return the report object.
-  return reportObject;
+  // Combine the chunks into a document and identify it as a cheerio object.
+  const $ = cheerio.load(chunks.join(''));
+  // Identify its “Titles” section’s table.
+  const titleTable = $('a[name=tt]').parent().parent().children('table');
+  // Identify its rows.
+  const titleRows = titleTable.children('tr');
+  // Initialize the result.
+  const result = [];
+  // For each row:
+  titleRows.each(
+    // Add its text content to the result.
+    (index, element) => {
+      result.push(element.children(td.result_text).first().text());
+    }
+  );
+  // Return the result as a set of lines of text.
+  return result.join('\n') + '\n';
 };
 
-// Define a function to output a report of the requested temperature.
-const tempReport = () => {
-  const temps = getTemp();
-  for (const scale of ['Kelvin', 'Celsius', 'Fahrenheit']) {
-    console.log('Temperature in ' + scale + ': ' + temps[scale]);
-  }
-};
+// Define a function to output a report of the matching motion pictures.
+const listReport = () => {console.log(getList());};
 
 /*
   Perform a GET request to the URL specified on the command line, if valid,
   and process its response.
 */
-const city = arg0IfValid();
-if (city) {
-  requestParams['q'] = city;
+const query = arg0IfValid();
+if (query) {
+  requestParams['q'] = query;
   const urlWithQuery
     = requestParams['url']
     + '?'
-    + ['q', 'mode', 'appid'].map(v => v + '=' + requestParams[v]).join('&');
-  hget(urlWithQuery, tempReport);
+    + ['q', 'ref_', 's'].map(v => v + '=' + requestParams[v]).join('&');
+  hget(urlWithQuery, ListReport);
 }
