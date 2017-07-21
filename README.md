@@ -16,9 +16,21 @@ copy-edit-files.js
 
 ## Discussion
 
+### General
+
 This application demonstrates the use of Node’s `http` module and the `cheerio` parsing library in a request to an API that responds with an HTML document.
 
 The application fulfills the specifications of the “Movie Search CLI” module of the [Learners Guild][lg] curriculum in Phase 2 of the Guild’s curriculum.
+
+### Extras
+
+The application also contains a module that strips unwanted comments from the files in a directory tree. This is the `copy-edit-files` module in the `dev` directory. It was invoked with
+
+`dev/copy-edit-files «/path-to-doc» «/path-to-new-dir» uncomment`
+
+This copied the files in `doc/` to a new directory and edited them to remove comments introduced by `//` or `/*`. Comments introduced by `///` or `/**` remained. The edited files were then moved to their standard locations.
+
+The `copy-edit-files` module more generally permits the user to supply a regular expression and a string, and then it replaces with the string any substring in any of the files that matches the regular expression. The `uncomment` keyword represents a particular replacement rule, and other such rules and keywords can be added to the module.
 
 ## Installation and Setup
 
