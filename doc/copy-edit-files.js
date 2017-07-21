@@ -34,7 +34,11 @@ const areValid = args => {
   specified pathname.
 */
 const reportError = (err, context, pathname) => {
-  console.log('[' + context + '] (' + pathname + '): ' + err.message);
+  // If there was an error:
+  if (err) {
+    // Report it.
+    console.log('[' + context + '] (' + pathname + '): ' + err.message);
+  }
 };
 
 /**
