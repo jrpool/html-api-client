@@ -42,10 +42,10 @@ const getList = () => {
   return result.join('\n') + '\n';
 };
 
-// Define a function to output a report of the matching motion pictures.
+/// Define a function to output a report of the matching motion pictures.
 const listReport = () => {console.log(getList());};
 
-/*
+/**
   Perform a GET request to the URL specified on the command line, if valid,
   and process its response.
 */
