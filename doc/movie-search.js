@@ -35,7 +35,7 @@ const getList = () => {
   titleRows.each(
     // Add its text content to the result.
     (index, element) => {
-      result.push(element.children(td.result_text).first().text());
+      result.push(element.children('td.result_text').first().text());
     }
   );
   // Return the result as a set of lines of text.
@@ -56,5 +56,5 @@ if (query) {
     = requestParams['url']
     + '?'
     + ['q', 'ref_', 's'].map(v => v + '=' + requestParams[v]).join('&');
-  hget(urlWithQuery, ListReport);
+  hget(urlWithQuery, listReport);
 }
