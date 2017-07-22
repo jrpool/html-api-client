@@ -3,10 +3,10 @@
   matching a specified query and outputting the list.
 */
 
-const hgetMod = require('./hget');
+const hgetModule = require('./src/hget');
 const cheerio = require('cheerio');
 
-const {chunks, hget, arg0IfValid} = hgetMod;
+const {chunks, hget, arg0IfValid} = hgetModule;
 
 const requestParams = {
   url: 'http://www.imdb.com/find',
@@ -21,15 +21,18 @@ const requestParams = {
 */
 const getList = () => {
   const $ = cheerio.load(chunks.join(''));
-  const titleTable = $('a[name=tt]').parent().parent().children('table');
-  const titleRows = titleTable.children('tr');
-  const result = [];
-  titleRows.each(
-    (index, element) => {
-      result.push(element.children('td.result_text').first().text());
-    }
-  );
-  return result.join('\n') + '\n';
+  const listCells =
+    $('a[name=tt]')
+      .parent()
+      .parent()
+      .children('table')
+      .children('tr')
+      .children('td.result_text');
+  const listTexts = [];
+  listCells.each((index, element) => {
+    listTexts.push($(element).text().replace(/^ +/, ''));
+  });
+  return listTexts.join('\n');
 };
 
 /// Define a function to output a report of the matching motion pictures.

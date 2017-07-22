@@ -4,11 +4,11 @@
 */
 
 // Import required modules.
-const hgetMod = require('./hget');
+const hgetModule = require('./hget');
 const cheerio = require('cheerio');
 
 // Identify its objects.
-const {chunks, hget, arg0IfValid} = hgetMod;
+const {chunks, hget, arg0IfValid} = hgetModule;
 
 // Initialize the query parameters.
 const requestParams = {
@@ -23,23 +23,25 @@ const requestParams = {
   HTML response of IMDB.
 */
 const getList = () => {
-  // Combine the chunks into a document and identify it as a cheerio object.
+  // Create a cheerio object representing the page.
   const $ = cheerio.load(chunks.join(''));
-  // Identify its “Titles” section’s table.
-  const titleTable = $('a[name=tt]').parent().parent().children('table');
-  // Identify its rows.
-  const titleRows = titleTable.children('tr');
-  // Initialize the result.
-  const result = [];
-  // For each row:
-  titleRows.each(
-    // Add its text content to the result.
-    (index, element) => {
-      result.push(element.children('td.result_text').first().text());
-    }
-  );
-  // Return the result as a set of lines of text.
-  return result.join('\n') + '\n';
+  // Identify a cheerio collection of cells containing title/year/type items.
+  const listCells =
+    $('a[name=tt]')
+      .parent()
+      .parent()
+      .children('table')
+      .children('tr')
+      .children('td.result_text');
+  // Initialize an array of title/year/type items.
+  const listTexts = [];
+  // For each of them:
+  listCells.each((index, element) => {
+    // Add its text content, with leading space deleted, to the array.
+    listTexts.push($(element).text().replace(/^ +/, ''));
+  });
+  // Return the items, newline-delimited.
+  return listTexts.join('\n');
 };
 
 /// Define a function to output a report of the matching motion pictures.
