@@ -21,12 +21,12 @@
     "test": "mocha --compilers js:babel-register test/*.js"
   },
   "bugs": {
-    "url": "https://github.com/jrpool/http-api-client.git/issues"
+    "url": "https://github.com/jrpool/html-api-client.git/issues"
   },
-  "homepage": "https://github.com/jrpool/http-api-client.git/index.html",
+  "homepage": "https://github.com/jrpool/html-api-client.git/index.html",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jrpool/http-api-client.git"
+    "url": "https://github.com/jrpool/html-api-client.git"
   },
   "eslintConfig": {
     "env": {
